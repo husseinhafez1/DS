@@ -1,48 +1,70 @@
-struct stack{
-    int *arr;
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+template <typename T>
+struct Stack {
+    T *arr;
     int size; 
     int sp;
-}
-void createstack(stack *st,int n){
+
+    Stack() {
+        arr = NULL;
+        size = 0;
+        sp = -1;
+    }
+};
+
+template <typename T>
+int initStack(Stack<T> *st,T sz){
     if (st->arr!=NULL)
-     free(st->arr);
-    st->arr=(int*)malloc(sizeof(char)*n);
-    if (st->arr!=NULL) 
-     printf("Error please enter number again:\n");
-    st->sp=-1;
-    st->size=n;
+        free(st->arr);
+    st->arr=(T*)malloc(sizeof(T) * sz);
+    if (st->arr==NULL) 
+        return  0;
+    st->sp = -1;
+    st->size = sz;
     return 1;
 }
-int push(stack *st, char in){
-    if (s->arr==NULL)
-     return -1;
-    if (s->sp+1==st->size)
-    return -2;
-    st->arr[st->sp]=in;
-    st->sp++;
+
+template <typename T>
+int push(Stack<T> *st, T val){
+    if (st->arr==NULL)
+        return -1;
+    if (st->sp+1==st->size)
+        return 0;
+    st->arr[++st->sp] = val;
     return 0;
 }
-int pop(stack *st, char *in){
+
+template <typename T>
+int pop(Stack<T> *st, T *val){
     if(st->arr==NULL)
-     return -1;
-    if(st->sp<0){
-        return -3;
-    }
-    *in=st-st->arr[st->sp];
-    st->sp=st->sp-1;
-    return 0;
+        return -1;
+    if(st->sp == -1)
+        return 0;
+    *val = st->arr[st->sp--];
+    return 1;
 }
-int top(stack *st,char *in){
+
+template <typename T>
+int top(Stack<T> *st,T *val){
     if(st->arr==NULL)
-     return -1;
-    if(st->sp<0){
-        return -3;
-    }
-    *in=st-st->arr[st->sp];
+        return -1;
+    if(st->sp == -1)
+        return 0;
+    *val =  st->arr[st->sp];
     return 0;
 }
-int isempty(stack *st,){
-    if(st->sp==-1)
+
+template <typename T>
+int isempty(Stack<T> *st){
+    if(st->sp == -1)
+        return 1;
+    return 1;
+}
+
+int main() {
+    
     return 0;
-return -1;
 }
