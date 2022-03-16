@@ -16,7 +16,7 @@ struct Stack {
 };
 
 template <typename T>
-int initStack(Stack<T> *st,T sz){
+int initStack(Stack<T> *st,int sz){
     if (st->arr!=NULL)
         free(st->arr);
     st->arr=(T*)malloc(sizeof(T) * sz);
