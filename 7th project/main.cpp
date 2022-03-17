@@ -40,30 +40,28 @@ int push(Stack<T> *st, T val){
 }
 
 template <typename T>
-int pop(Stack<T> *st, T *val){
+T pop(Stack<T> *st){
     if(st->arr==NULL)
         return -1;
     if(st->sp == -1)
         return 0;
-    *val = st->arr[st->sp--];
-    return 1;
+    return st->arr[st->sp--];
 }
 
 template <typename T>
-int top(Stack<T> *st,T *val){
+T top(Stack<T> *st){
     if(st->arr==NULL)
         return -1;
     if(st->sp == -1)
         return 0;
-    *val =  st->arr[st->sp];
-    return 1;
+    return st->arr[st->sp];
 }
 
 template <typename T>
 int isempty(Stack<T> *st){
     if(st->sp == -1)
-        return 0;
-    return 1;
+        return 1;
+    return 0;
 }
 
 int Prec(char ch)
@@ -106,41 +104,27 @@ int main() {
     char postfix[256];
     int pfIndex = 0;
     for (int i = 0; i < strlen(infix); i++) {
-        if (isdigit(infix[i])) {
-            postfix[pfIndex++] = infix[i];
-        }
-        else if (infix[i] == '(') {
+        if (infix[i] == '(')
             push<char>(&operators, infix[i]);
-        }
-        else if (infix[i] == ')') {
-            char val;
-            top<char>(&operators, &val);
-            while (val != '(') {
-                postfix[pfIndex++] = val;
-                pop<char>(&operators, &val);
-                top<char>(&operators, &val);
-            }
-            pop<char>(&operators, &val);
-        }
-        else {
-            char val;
-            top<char>(&operators, &val);
-            while (!isempty(&operators) && Prec(infix[i]) <= Prec(val)) {
-                postfix[pfIndex++] = val;
-                pop<char>(&operators, &val);
-                top<char>(&operators, &val);
-            }
-            push<char>(&operators, infix[i]);
-        }
+        else
+            if (isdigit(infix[i])) 
+                postfix[pfIndex++] = infix[i];
+            else
+                if (infix[i] == ')') {
+                    while (top<char>(&operators) != '(')
+                        postfix[pfIndex++] = pop<char>(&operators);
+                    pop<char>(&operators);
+                }
+                else {
+                    while (Prec(top<char>(&operators)) >= Prec(infix[i]))
+                        postfix[pfIndex++] = pop<char>(&operators);
+                    push<char>(&operators, infix[i]);
+                }
     }
-    char val;
-    while (pop<char>(&operators, &val)) {
-        postfix[pfIndex++] = val;
-    }
-
+    while (!isempty(&operators))
+        postfix[pfIndex++] = pop<char>(&operators);
     postfix[pfIndex] = '\0';
-    printf("%s\n", postfix);
-
+    printf("\nPostfix Expression =  %s\n",postfix);
     for (int i = 0; i < strlen(postfix); i++) {
         if (isdigit(postfix[i])) {
             push<double>(&res, postfix[i]-'0');
@@ -148,38 +132,41 @@ int main() {
         else {
             if (postfix[i] == '+') {
                 double a, b;
-                pop<double>(&res, &a);
-                pop<double>(&res, &b);
+                a = pop<double>(&res);
+                b = pop<double>(&res);
                 push<double>(&res, a+b);
             }
             else if (postfix[i] == '-') {
                 double a, b;
-                pop<double>(&res, &a);
-                pop<double>(&res, &b);
-                push<double>(&res, a-b);
+                a = pop<double>(&res);
+                b = pop<double>(&res);
+                push<double>(&res, b-a);
             }
             else if (postfix[i] == '*') {
                 double a, b;
-                pop<double>(&res, &a);
-                pop<double>(&res, &b);
+                a = pop<double>(&res);
+                b = pop<double>(&res);
                 push<double>(&res, a*b);
             }
             else if (postfix[i] == '/') {
                 double a, b;
-                pop<double>(&res, &a);
-                pop<double>(&res, &b);
+                a = pop<double>(&res);
+                b = pop<double>(&res);
+                if (a == 0) {
+                    printf("Math Error!!!");
+                    return 0;
+                }
                 push<double>(&res, b/a);
             }
             else if (postfix[i] == '^') {
                 double a, b;
-                pop<double>(&res, &a);
-                pop<double>(&res, &b);
+                a = pop<double>(&res);
+                b = pop<double>(&res);
                 push<double>(&res, pow(b,a));
             }
         }
     }
-    double result;
-    pop(&res, &result);
-    printf("%lf", result);
+    printf("%lf", pop<double>(&res));
+
     return 0;
 }
