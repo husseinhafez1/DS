@@ -104,7 +104,9 @@ int main() {
     char postfix[255];
     int pfIndex = 0;
     for (int i = 0; i < strlen(infix); i++) {
-        if ((isdigit(infix[i]) && isdigit(infix[i+1])) || (isOperator(infix[i]) && isOperator(infix[i+1]))) {
+        if ((isdigit(infix[i]) && isdigit(infix[i+1])) || 
+            (isOperator(infix[i]) && isOperator(infix[i+1])) || 
+            (isOperator(infix[i]) && infix[i+1] == '\0')) {
             printf("Expression not balanced.");
             return 0;
         }
