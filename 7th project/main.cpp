@@ -44,7 +44,7 @@ T pop(Stack<T> *st){
     if(st->arr==NULL)
         return -1;
     if(st->sp == -1)
-        return 0;
+        return -2;
     return st->arr[st->sp--];
 }
 
@@ -53,7 +53,7 @@ T top(Stack<T> *st){
     if(st->arr==NULL)
         return -1;
     if(st->sp == -1)
-        return 0;
+        return -2;
     return st->arr[st->sp];
 }
 
@@ -95,34 +95,54 @@ int isOperator(char c)
 
 
 int main() {
-    char infix[256];
+    char infix[255];
     gets(infix);
     Stack<char> operators;
     Stack<double> res;
     initStack<char>(&operators, strlen(infix));
     initStack<double>(&res, strlen(infix));
-    char postfix[256];
+    char postfix[255];
     int pfIndex = 0;
     for (int i = 0; i < strlen(infix); i++) {
+        if ((isdigit(infix[i]) && isdigit(infix[i+1])) || (isOperator(infix[i]) && isOperator(infix[i+1]))) {
+            printf("Expression not balanced.");
+            return 0;
+        }
         if (infix[i] == '(')
             push<char>(&operators, infix[i]);
-        else
+        else {
             if (isdigit(infix[i])) 
                 postfix[pfIndex++] = infix[i];
-            else
+            else {
                 if (infix[i] == ')') {
-                    while (top<char>(&operators) != '(')
+                    while (top<char>(&operators) != '(' && top<char>(&operators) != -2)
                         postfix[pfIndex++] = pop<char>(&operators);
+                    if (top<char>(&operators) == -2) {
+                        printf("Expression not balanced.\n");
+                        return 0;
+                    }
                     pop<char>(&operators);
                 }
-                else {
+                else if (isOperator(infix[i])) {
                     while (Prec(top<char>(&operators)) >= Prec(infix[i]))
                         postfix[pfIndex++] = pop<char>(&operators);
                     push<char>(&operators, infix[i]);
                 }
+                else {
+                    printf("Expression not balanced.\n");
+                    return 0;
+                }
+            }
+        }
     }
-    while (!isempty(&operators))
-        postfix[pfIndex++] = pop<char>(&operators);
+    while (!isempty(&operators)) {
+        if (top<char>(&operators) != '(')
+            postfix[pfIndex++] = pop<char>(&operators);
+        else {
+            printf("Expression  not balanced.\n");
+            return 0;
+        }
+    }
     postfix[pfIndex] = '\0';
     printf("\nPostfix Expression =  %s\n",postfix);
     for (int i = 0; i < strlen(postfix); i++) {
