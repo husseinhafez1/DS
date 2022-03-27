@@ -3,7 +3,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
-#include <conio.h>
 
 template <typename T>
 struct Stack {
@@ -67,16 +66,13 @@ int isempty(Stack<T> *st){
 
 int Prec(char ch)
 {
-    switch (ch)
-    {
-    case '+':
-    case '-':
+    if (ch == '+' || ch == '-') {
         return 1;
- 
-    case '*':
-    case '/':
+    }
+    else if (ch == '*' || ch == '/') {
         return 2;
-    case '^':
+    }
+    else if (ch == '^') {
         return 3;
     }
     return -1;
@@ -112,7 +108,7 @@ int main() {
         if ((isdigit(infix[i]) && isdigit(infix[i+1])) || 
             (isOperator(infix[i]) && isOperator(infix[i+1])) || 
             (isOperator(infix[i]) && infix[i+1] == '\0')) {
-            printf("Expression not balanced.");
+            printf("\nInvalid input. \n");
             return 0;
         }
         if (infix[i] == '(')
@@ -126,7 +122,7 @@ int main() {
                         postfix[pfIndex++] = pop<char>(&operators);
 
                     if (top<char>(&operators) == -2) {
-                        printf("Expression not balanced.\n");
+                        printf("\nInvalid input.\n");
                         return 0;
                     }
 
@@ -139,7 +135,7 @@ int main() {
                     push<char>(&operators, infix[i]);
                 }
                 else {
-                    printf("Expression not balanced.\n");
+                    printf("\nInvalid input.\n");
                     return 0;
                 }
             }
@@ -150,7 +146,7 @@ int main() {
         if (top<char>(&operators) != '(')
             postfix[pfIndex++] = pop<char>(&operators);
         else {
-            printf("Expression  not balanced.\n");
+            printf("\nInvalid input.\n");
             return 0;
         }
     }
@@ -186,7 +182,7 @@ int main() {
                 a = pop<double>(&res);
                 b = pop<double>(&res);
                 if (a == 0) {
-                    printf("Math Error!!!");
+                    printf("\nMath Error!!!\n");
                     return 0;
                 }
                 push<double>(&res, b/a);
@@ -199,7 +195,7 @@ int main() {
             }
         }
     }
-    printf("\n%s = %.2lf\n", infix,pop<double>(&res));
+    printf("\n%s = %lf\n", infix,pop<double>(&res));
 
     return 0;
 }
